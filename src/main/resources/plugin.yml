@@ -1,0 +1,6 @@
+name: MopoClans
+version: '${version}'
+
+main: org.Mopo.mopoClans.MopoClans
+api-version: '26.1.2'
+load: POSTWORLD
