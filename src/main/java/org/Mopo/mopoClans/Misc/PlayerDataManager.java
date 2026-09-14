@@ -14,4 +14,13 @@ public class PlayerDataManager {
         PlayerData playerData = new PlayerData(uuid);
         playerDataMap.put(uuid, playerData);
     }
+
+    public PlayerData getPlayerData(UUID uuid) {
+        return playerDataMap.get(uuid);
+    }
+
+    public UUID getPlayerUUID(String userName) {
+        return playerUUIDMap.get(userName);
+    }
+
 }
