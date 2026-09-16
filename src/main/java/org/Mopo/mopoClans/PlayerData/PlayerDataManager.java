@@ -1,9 +1,9 @@
-package org.Mopo.mopoClans.Misc;
-
-import org.bukkit.entity.Player;
+package org.Mopo.mopoClans.PlayerData;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+
 
 public class PlayerDataManager {
     private HashMap<UUID, PlayerData> playerDataMap = new HashMap<UUID, PlayerData>();
@@ -21,6 +21,10 @@ public class PlayerDataManager {
 
     public UUID getPlayerUUID(String userName) {
         return playerUUIDMap.get(userName);
+    }
+
+    public void savePlayerData(UUID uuid) {
+
     }
 
 }

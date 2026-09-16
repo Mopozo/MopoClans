@@ -1,4 +1,4 @@
-package org.Mopo.mopoClans.Misc;
+package org.Mopo.mopoClans.PlayerData;
 
 import java.util.UUID;
 
