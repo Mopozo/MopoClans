@@ -13,7 +13,7 @@ public class ClanManager {
 
     private final String[] clanNames = MopoClans.getFolder().list();
     private final MopoYaml configYML = MopoClans.getConfigYML();
-    public static File CLANS_FOLDER = new File(MopoClans.getFolder(), "Clans");
+
 
 
     public void createClan(String clanName,  String clanTag, UUID leaderUUID) {
@@ -26,7 +26,7 @@ public class ClanManager {
             configYML.set("max_clan_members", maxMembers);
             clan.setMaxMembers(maxMembers);
         }
-        File clanFile = new File(CLANS_FOLDER, clanName + ".yml");
+        File clanFile = new File(MopoClans.getClanFolder(), clanName + ".yml");
         clan.setClanFile(clanFile);
         MopoYaml yml = clan.getYml();
         yml.set("clan_name", clan);
@@ -34,16 +34,16 @@ public class ClanManager {
     }
 
     public void deleteClan(String clanName) {
-        File clanFile = new File(CLANS_FOLDER, clanName + ".yml");
+        File clanFile = new File(MopoClans.getClanFolder(), clanName + ".yml");
         if (!clanFile.delete()) {
             System.out.println("File doesnt exist");
         }
     }
 
     public void renameClan(String oldName, String newName) {
-        File clanFile = new File(CLANS_FOLDER, oldName + ".yml");
+        File clanFile = new File(MopoClans.getClanFolder(), oldName + ".yml");
         if (clanFile.exists()) {
-            clanFile.renameTo(new File(CLANS_FOLDER, newName + ".yml"));
+            clanFile.renameTo(new File(MopoClans.getClanFolder(), newName + ".yml"));
         }
     }
 
