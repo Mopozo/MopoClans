@@ -30,6 +30,16 @@ public class Clan {
         this.clanLeaderUUID = leaderUUID;
     }
 
+    Clan() {
+        this.clanName = null;
+        this.clanTag = null;
+        this.clanLevel = 0;
+        this.clanEXP = 0;
+        this.clanPoints = 0;
+        this.clanBalance = 0;
+        this.clanLeaderUUID = null;
+    }
+
 
     public String getClanName() {
         return clanName;
