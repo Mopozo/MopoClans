@@ -38,18 +38,37 @@ public class ClanCMD implements CommandExecutor {
                             if (playerData.isAdmin()) {
                                 String clanName = args[1];
                                 clanManager.deleteClan(clanName);
+                                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Clan successfully disbanded!"));
                             }
                         } else if (args.length == 1) {
                             String clanName = playerData.getClanName();
-                            clanManager.
-                            if () {}
+                            if (clanManager.getClan(clanName).getClanLeaderUUID().equals(player.getUniqueId())) {
+                                clanManager.deleteClan(clanName);
+                                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Clan successfully disbanded!"));
+                            }
                         }
                     }
                     case "rename"  -> {
-                        if (args.length == 2) {
-
+                        if (args.length >= 2) {
+                            if (args.length == 3) {
+                                if (playerData.isAdmin()) {
+                                    String targetClanName = args[1];
+                                    String newClanName = args[2];
+                                    clanManager.renameClan(targetClanName, newClanName);
+                                    player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Clan " + targetClanName + " is now clan " + newClanName ));
+                                }
+                            } else if (args.length == 2) {
+                                String clanName = playerData.getClanName();
+                                if (clanManager.getClan(clanName).getClanLeaderUUID().equals(player.getUniqueId())) {
+                                    String targetClanName = playerData.getClanName();
+                                    String newClanName = args[1];
+                                    clanManager.renameClan(targetClanName, newClanName);
+                                    player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You are now clan " + newClanName));
+                                }
+                            }
                         }
                     }
+                    case "inbox" -> {}
                 }
             }
         }

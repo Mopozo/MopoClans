@@ -1,6 +1,7 @@
 package org.Mopo.mopoClans.PlayerData;
 
 import mopo.mopoLib.yml.MopoYaml;
+import org.Mopo.mopoClans.Inbox.Inbox;
 import org.Mopo.mopoClans.MopoClans;
 
 import java.io.File;
@@ -10,6 +11,7 @@ public class PlayerData {
     private UUID uuid;
     private String clanName;
     private String clanRank;
+    private Inbox inbox;
     private boolean isAdmin;
     private File playerFile;
 
@@ -59,4 +61,8 @@ public class PlayerData {
     public void setPlayerFile(File playerFile) {
         this.playerFile = playerFile;
     }
+
+    public Inbox getInbox() {return inbox;}
+
+    public void setInbox(Inbox inbox) {this.inbox = inbox;}
 }

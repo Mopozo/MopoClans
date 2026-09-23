@@ -2,6 +2,7 @@ package org.Mopo.mopoClans.PlayerData;
 
 import mopo.mopoLib.inventories.BufferManager;
 import mopo.mopoLib.yml.MopoYaml;
+import org.Mopo.mopoClans.Inbox.Inbox;
 import org.Mopo.mopoClans.MopoClans;
 
 import java.io.File;
@@ -18,6 +19,7 @@ public class PlayerDataManager {
         playerUUIDMap.put(userName, uuid);
         PlayerData playerData = new PlayerData(uuid);
         playerData.setAdmin(false);
+        playerData.setInbox(new Inbox(uuid));
         playerData.setPlayerFile(new File(MopoClans.getPlayerFolder(), userName + ".yml"));
         playerDataMap.put(uuid, playerData);
     }

@@ -6,6 +6,7 @@ import mopo.mopoLib.yml.MopoYaml;
 import org.Mopo.mopoClans.ClanData.Clan;
 import org.Mopo.mopoClans.ClanData.ClanManager;
 import org.Mopo.mopoClans.Commands.ClanCMD;
+import org.Mopo.mopoClans.Inbox.InboxManager;
 import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +20,7 @@ public final class MopoClans extends JavaPlugin {
     private static MopoClans INSTANCE;
     private static BufferManager BUFFERMANAGER;
     private static PlayerDataManager PLAYERDATAMANAGER;
+    private static InboxManager INBOXMANAGER;
     private static ClanManager CLANMANAGER;
     private static File FOLDER;
     private static File CONFIG_FILE;
@@ -28,6 +30,8 @@ public final class MopoClans extends JavaPlugin {
     private static File PLAYER_FOLDER;
     private static MopoYaml PLAYER_YAML;
     private static MopoYaml CLAN_YAML;
+    private static File INBOX_FOLDER;
+    private static MopoYaml INBOX_YML;
 
     public static MopoYaml getPlayerYaml() {
         return PLAYER_YAML;
@@ -43,6 +47,13 @@ public final class MopoClans extends JavaPlugin {
             return CLAN_FOLDER;
         }
         return CLAN_FOLDER;
+    }
+    public static File getInboxFolder() {
+        if (!INBOX_FOLDER.exists()) {
+            INBOX_FOLDER.mkdir();
+            return INBOX_FOLDER;
+        }
+        return INBOX_FOLDER;
     }
     public static File getPlayerFolder() {
         if (!PLAYER_FOLDER.exists()) {
@@ -60,11 +71,17 @@ public final class MopoClans extends JavaPlugin {
         return CLANMANAGER;
     }
 
+    public static InboxManager getINBOXMANAGER() {
+        return INBOXMANAGER;
+    }
+
+
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         INSTANCE = this;
+        INBOXMANAGER = new InboxManager();
         BUFFERMANAGER = new BufferManager();
         if (!FOLDER.exists()) {
             FOLDER.mkdir();

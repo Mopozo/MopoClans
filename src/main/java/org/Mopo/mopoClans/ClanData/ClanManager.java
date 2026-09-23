@@ -59,6 +59,8 @@ public class ClanManager {
     public Clan getClan(String clanName) {
         if (clanMap.containsKey(clanName)) {
             return clanMap.get(clanName);
+        }else {
+            return null;
         }
     }
 
