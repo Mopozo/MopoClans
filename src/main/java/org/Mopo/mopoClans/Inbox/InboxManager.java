@@ -1,6 +1,7 @@
 package org.Mopo.mopoClans.Inbox;
 
 import mopo.mopoLib.inventories.BufferManager;
+import org.Mopo.mopoClans.Inventories.InboxHolder;
 import org.Mopo.mopoClans.MopoClans;
 import org.Mopo.mopoClans.PlayerData.PlayerData;
 import org.Mopo.mopoClans.PlayerData.PlayerDataManager;

@@ -3,9 +3,11 @@ package org.Mopo.mopoClans.Commands;
 import mopo.mopoLib.tabComplete.TabComplete;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.Mopo.mopoClans.ClanData.ClanManager;
+import org.Mopo.mopoClans.Inbox.InboxManager;
 import org.Mopo.mopoClans.MopoClans;
 import org.Mopo.mopoClans.PlayerData.PlayerData;
 import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +20,7 @@ public class ClanCMD implements CommandExecutor {
 
         ClanManager clanManager = MopoClans.getCLANMANAGER();
         PlayerDataManager playerdatamanager = MopoClans.getPLAYERDATAMANAGER();
+        InboxManager inboxManager = MopoClans.getINBOXMANAGER();
 
         if ((sender instanceof Player player)) {
             PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
@@ -68,7 +71,25 @@ public class ClanCMD implements CommandExecutor {
                             }
                         }
                     }
-                    case "inbox" -> {}
+                    case "inbox" -> {
+                        if (playerData.getInbox() != null) {
+                            player.openInventory(inboxManager.getInbox(player.getUniqueId()));
+                        }
+                    }
+                    case "invite" -> {
+                        if (args.length >= 2) {
+                            String targetUser = args[1];
+                            Player targetPlayer = Bukkit.getPlayer(targetUser);
+                            if (targetPlayer != null) {
+                                if (playerData.getClanRank().equals("admin") || playerData.getClanRank().equals("leader")) {
+                                    clanManager.sendClanInvite(targetUser, playerData.getClanName());
+                                }
+                            }
+                        }
+                    }
+                    case "accept" -> {
+                        
+                    }
                 }
             }
         }

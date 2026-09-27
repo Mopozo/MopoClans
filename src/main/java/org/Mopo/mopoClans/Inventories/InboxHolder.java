@@ -1,4 +1,4 @@
-package org.Mopo.mopoClans.Inbox;
+package org.Mopo.mopoClans.Inventories;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;

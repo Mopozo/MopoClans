@@ -3,6 +3,7 @@ package org.Mopo.mopoClans.ClanData;
 import mopo.mopoLib.yml.MopoYaml;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class Clan {
@@ -11,8 +12,8 @@ public class Clan {
     private String clanTag;
     private int maxMembers;
     private UUID clanLeaderUUID;
-    private UUID[] clanAdminsUUID;
-    private UUID[] clanMembersUUID;
+    private List<UUID> clanAdminsUUID;
+    private List<UUID> clanMembersUUID;
     private int clanPoints;
     private double clanBalance;
     private int clanLevel;
@@ -73,21 +74,23 @@ public class Clan {
         this.clanLeaderUUID = clanLeaderUUID;
     }
 
-    public UUID[] getClanAdminsUUID() {
+    public List<UUID> getClanAdminsUUID() {
         return clanAdminsUUID;
     }
 
-    public void setClanAdminsUUID(UUID[] clanAdminsUUID) {
-        this.clanAdminsUUID = clanAdminsUUID;
+    public void setClanAdminsUUID(UUID clanAdminsUUID) {
+        this.clanAdminsUUID.add(clanAdminsUUID);
     }
 
-    public UUID[] getClanMembersUUID() {
+    public List<UUID> getClanMembersUUID() {
         return clanMembersUUID;
     }
 
-    public void setClanMembersUUID(UUID[] clanMembersUUID) {
-        this.clanMembersUUID = clanMembersUUID;
+    public void addClanMembersUUID(UUID clanMembersUUID) {
+        this.clanMembersUUID.add(clanMembersUUID);
     }
+
+    public void removeClanMembersUUID(UUID clanMemberUUID) {this.clanMembersUUID.remove(clanMemberUUID);}
 
     public int getClanPoints() {
         return clanPoints;

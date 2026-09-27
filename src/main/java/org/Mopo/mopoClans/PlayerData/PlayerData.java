@@ -5,6 +5,7 @@ import org.Mopo.mopoClans.Inbox.Inbox;
 import org.Mopo.mopoClans.MopoClans;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerData {
@@ -14,7 +15,7 @@ public class PlayerData {
     private Inbox inbox;
     private boolean isAdmin;
     private File playerFile;
-
+    private List<String> incomingClanInvites;
 
 
 
@@ -65,4 +66,16 @@ public class PlayerData {
     public Inbox getInbox() {return inbox;}
 
     public void setInbox(Inbox inbox) {this.inbox = inbox;}
+
+    public List<String> getIncomingClanInvites() {
+        return incomingClanInvites;
+    }
+
+    public void addIncomingClanInvites(String clanName) {
+        this.incomingClanInvites.add(clanName);
+    }
+
+    public void removeIncomingClanInvite(String clanName) {
+        this.incomingClanInvites.remove(clanName);
+    }
 }

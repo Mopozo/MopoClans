@@ -7,6 +7,7 @@ import org.Mopo.mopoClans.ClanData.Clan;
 import org.Mopo.mopoClans.ClanData.ClanManager;
 import org.Mopo.mopoClans.Commands.ClanCMD;
 import org.Mopo.mopoClans.Inbox.InboxManager;
+import org.Mopo.mopoClans.Listeners.InboxListener;
 import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -100,6 +101,7 @@ public final class MopoClans extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         Bukkit.getPluginCommand("clan").setExecutor(new ClanCMD());
 
+        pm.registerEvents(new InboxListener, MopoClans.getINSTANCE());
     }
 
     @Override
