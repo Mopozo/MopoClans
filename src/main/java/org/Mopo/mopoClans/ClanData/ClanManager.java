@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -144,6 +145,21 @@ public class ClanManager {
             if (player != null) {
                 PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
                 playerData.removeIncomingClanInvite(clanName);
+            }
+        }
+    }
+
+    public void promoteClanMember(String playerName, String clanName) {
+        Clan clan = clanManager.getClan(clanName);
+        if (clan != null) {
+            List<UUID> clanAdminsUUID = clan.getClanAdminsUUID();
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                if (clanAdminsUUID.contains(player.getUniqueId())) {
+                    clan.setClanAdminsUUID(player.getUniqueId());
+                    PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
+                    playerData.setClanRank("admin");
+                }
             }
         }
     }

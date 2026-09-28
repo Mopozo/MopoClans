@@ -1,7 +1,7 @@
 package org.Mopo.mopoClans.Commands;
 
-import mopo.mopoLib.tabComplete.TabComplete;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.Mopo.mopoClans.ClanData.Clan;
 import org.Mopo.mopoClans.ClanData.ClanManager;
 import org.Mopo.mopoClans.Inbox.InboxManager;
 import org.Mopo.mopoClans.MopoClans;
@@ -24,6 +24,11 @@ public class ClanCMD implements CommandExecutor {
 
         if ((sender instanceof Player player)) {
             PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
+
+            if (args.length == 0) {
+
+            }
+
             if (args.length >= 1) {
                 String arg1 = args[0];
                 switch (arg1) {
@@ -97,6 +102,28 @@ public class ClanCMD implements CommandExecutor {
                             }
                         }
 
+                    }
+                    case "deny" -> {
+                        if (args.length >= 2) {
+                            String targetClan = args[1];
+                            if (playerData.getIncomingClanInvites().contains(targetClan)) {
+                                clanManager.removeClanInvite(player.getName(), targetClan);
+                            } else {
+                                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>No incoming invites from clan:" + targetClan));
+                            }
+                        }
+                    }
+                    case "promote" -> {
+                        if (args.length >= 2) {
+                            String targetplayer = args[1];
+                            String targetClan = playerData.getClanName();
+                            Clan clan = clanManager.getClan(targetClan);
+                            if (targetClan != null) {
+                                if (playerData.getClanRank().equals("admin") || clan.getClanLeaderUUID().equals(player.getUniqueId())) {
+                                    clanManager.promoteClanMember(targetplayer, targetClan);
+                                }
+                            }
+                        }
                     }
                 }
             }
