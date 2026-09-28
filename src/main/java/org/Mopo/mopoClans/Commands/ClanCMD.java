@@ -88,7 +88,15 @@ public class ClanCMD implements CommandExecutor {
                         }
                     }
                     case "accept" -> {
-                        
+                        if (args.length >= 2) {
+                            String targetClan = args[1];
+                            if (playerData.getIncomingClanInvites().contains(targetClan)) {
+                                clanManager.addClanMember(player.getUniqueId(), targetClan );
+                            } else {
+                                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>No incoming invites from clan:" + targetClan));
+                            }
+                        }
+
                     }
                 }
             }
