@@ -16,11 +16,8 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class ClanManager {
@@ -43,6 +40,7 @@ public class ClanManager {
         }
         File clanFile = new File(MopoClans.getClanFolder(), clanName + ".yml");
         clan.setClanFile(clanFile);
+        clan.addClanMembersUUID(leaderUUID);
         PlayerData playerData = playerdatamanager.getPlayerData(leaderUUID);
         playerData.setClanRank("leader");
         MopoYaml yml = clan.getYml();
@@ -160,6 +158,21 @@ public class ClanManager {
                     PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
                     playerData.setClanRank("admin");
                 }
+            }
+        }
+    }
+
+    public void setClanOwner(String playerName, String clanName) {
+        Clan clan = clanManager.getClan(clanName);
+        if (clan != null) {
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                UUID clanLeaderUUID = clan.getClanLeaderUUID();
+                PlayerData playerDataOldLeader = playerdatamanager.getPlayerData(clanLeaderUUID);
+                playerDataOldLeader.setClanRank("default");
+                clan.setClanLeaderUUID(player.getUniqueId());
+                PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
+                playerData.setClanRank("leader");
             }
         }
     }

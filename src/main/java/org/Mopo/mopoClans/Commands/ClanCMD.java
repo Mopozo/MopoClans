@@ -14,6 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class ClanCMD implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -121,6 +123,20 @@ public class ClanCMD implements CommandExecutor {
                             if (targetClan != null) {
                                 if (playerData.getClanRank().equals("admin") || clan.getClanLeaderUUID().equals(player.getUniqueId())) {
                                     clanManager.promoteClanMember(targetplayer, targetClan);
+                                }
+                            }
+                        }
+                    }
+                    case "transfer" -> {
+                        if (args.length >= 2) {
+                            String targetPlayer = args[1];
+                            Player player1 = Bukkit.getPlayer(targetPlayer);
+                            if (player1 != null) {
+                                UUID targetPlayerUUID = player1.getUniqueId();
+                                PlayerData targetPlayerData = playerdatamanager.getPlayerData(targetPlayerUUID);
+                                String clanName = targetPlayerData.getClanName();
+                                if (playerData.getClanName().equals(clanName) && playerData.getClanRank().equals("leader")) {
+                                    clanManager.setClanOwner(targetPlayer, clanName);
                                 }
                             }
                         }
