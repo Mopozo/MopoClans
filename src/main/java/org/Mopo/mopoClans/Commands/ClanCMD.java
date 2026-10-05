@@ -4,6 +4,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.Mopo.mopoClans.ClanData.Clan;
 import org.Mopo.mopoClans.ClanData.ClanManager;
 import org.Mopo.mopoClans.Inbox.InboxManager;
+import org.Mopo.mopoClans.Inventories.ClanGUI;
 import org.Mopo.mopoClans.MopoClans;
 import org.Mopo.mopoClans.PlayerData.PlayerData;
 import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
@@ -23,12 +24,13 @@ public class ClanCMD implements CommandExecutor {
         ClanManager clanManager = MopoClans.getCLANMANAGER();
         PlayerDataManager playerdatamanager = MopoClans.getPLAYERDATAMANAGER();
         InboxManager inboxManager = MopoClans.getINBOXMANAGER();
+        ClanGUI clanGUI = new ClanGUI();
 
         if ((sender instanceof Player player)) {
             PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
 
             if (args.length == 0) {
-
+                player.openInventory(clanGUI.getClanGui(player.getUniqueId()));
             }
 
             if (args.length >= 1) {
