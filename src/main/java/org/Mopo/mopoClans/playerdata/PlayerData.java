@@ -1,10 +1,9 @@
-package org.Mopo.mopoClans.PlayerData;
+package org.Mopo.mopoClans.playerdata;
 
-import mopo.mopoLib.yml.MopoYaml;
-import org.Mopo.mopoClans.Inbox.Inbox;
-import org.Mopo.mopoClans.MopoClans;
+import org.Mopo.mopoClans.inbox.Inbox;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,9 +14,11 @@ public class PlayerData {
     private Inbox inbox;
     private boolean isAdmin;
     private File playerFile;
-    private List<String> incomingClanInvites;
+    private final List<String> incomingClanInvites = new ArrayList<>();
 
-
+    PlayerData(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     public String getClanName() {
         return clanName;
@@ -40,10 +41,6 @@ public class PlayerData {
     }
 
     public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    PlayerData(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -72,10 +69,19 @@ public class PlayerData {
     }
 
     public void addIncomingClanInvites(String clanName) {
-        this.incomingClanInvites.add(clanName);
+        if (!this.incomingClanInvites.contains(clanName)) {
+            this.incomingClanInvites.add(clanName);
+        }
     }
 
     public void removeIncomingClanInvite(String clanName) {
         this.incomingClanInvites.remove(clanName);
+    }
+
+    public void setIncomingClanInvites(List<String> clanNames) {
+        this.incomingClanInvites.clear();
+        if (clanNames != null) {
+            this.incomingClanInvites.addAll(clanNames);
+        }
     }
 }

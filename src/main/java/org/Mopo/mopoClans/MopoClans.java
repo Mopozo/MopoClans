@@ -1,26 +1,23 @@
 package org.Mopo.mopoClans;
 
-import mopo.mopoLib.MopoLib;
 import mopo.mopoLib.inventories.BufferManager;
 import mopo.mopoLib.yml.MopoYaml;
-import org.Mopo.mopoClans.ClanData.Clan;
-import org.Mopo.mopoClans.ClanData.ClanManager;
-import org.Mopo.mopoClans.Commands.ClanCMD;
-import org.Mopo.mopoClans.Inbox.InboxManager;
-import org.Mopo.mopoClans.Listeners.ClanListener;
-import org.Mopo.mopoClans.Listeners.InboxListener;
-import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
+import org.Mopo.mopoClans.clandata.ClanManager;
+import org.Mopo.mopoClans.commands.ClanCMD;
+import org.Mopo.mopoClans.inbox.InboxManager;
+import org.Mopo.mopoClans.listeners.ClanListener;
+import org.Mopo.mopoClans.listeners.InboxListener;
+import org.Mopo.mopoClans.listeners.PlayerDataListener;
+import org.Mopo.mopoClans.playerdata.PlayerDataManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public final class MopoClans extends JavaPlugin {
-    private static MopoClans INSTANCE;
-    private static BufferManager BUFFERMANAGER;
+    private static MopoClans INSTANCE; //todo no caps. only caps for final
+    private static BufferManager BUFFERMANAGER; //todo none of these should be static. use getters, also no caps
     private static PlayerDataManager PLAYERDATAMANAGER;
     private static InboxManager INBOXMANAGER;
     private static ClanManager CLANMANAGER;
@@ -29,11 +26,14 @@ public final class MopoClans extends JavaPlugin {
     private static MopoYaml configYML;
     private static MopoYaml MOPO_YAML;
     private static File CLAN_FOLDER;
-    private static File PLAYER_FOLDER;
+    private static File PLAYER_FOLDER; // should be handled in the player class, same with others ect
     private static MopoYaml PLAYER_YAML;
     private static MopoYaml CLAN_YAML;
     private static File INBOX_FOLDER;
     private static MopoYaml INBOX_YML;
+
+
+
 
     public static MopoYaml getPlayerYaml() {
         return PLAYER_YAML;
@@ -44,28 +44,26 @@ public final class MopoClans extends JavaPlugin {
     }
 
     public static File getClanFolder() {
-        if (!CLAN_FOLDER.exists()) {
-            CLAN_FOLDER.mkdir();
-            return CLAN_FOLDER;
-        }
-        return CLAN_FOLDER;
+        return ensureFolder(CLAN_FOLDER);
     }
     public static File getInboxFolder() {
-        if (!INBOX_FOLDER.exists()) {
-            INBOX_FOLDER.mkdir();
-            return INBOX_FOLDER;
-        }
-        return INBOX_FOLDER;
+        return ensureFolder(INBOX_FOLDER);
     }
     public static File getPlayerFolder() {
-        if (!PLAYER_FOLDER.exists()) {
-            PLAYER_FOLDER.mkdir();
-            return PLAYER_FOLDER;
-        }
-        return PLAYER_FOLDER;
+        return ensureFolder(PLAYER_FOLDER);
     }
 
-    public static PlayerDataManager getPLAYERDATAMANAGER() {
+    private static File ensureFolder(File folder) {
+        if (folder == null) {
+            throw new IllegalStateException("Plugin data folders have not been initialized");
+        }
+        if (!folder.exists() && !folder.mkdirs()) {
+            throw new IllegalStateException("Could not create plugin data folder: " + folder);
+        }
+        return folder;
+    }
+
+    public static PlayerDataManager getPLAYERDATAMANAGER() { // shouldnt all be upper case
         return PLAYERDATAMANAGER;
     }
 
@@ -81,33 +79,48 @@ public final class MopoClans extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         INSTANCE = this;
+        FOLDER = getDataFolder();
+        ensureFolder(FOLDER);
+        CONFIG_FILE = new File(FOLDER, "config.yml");
+        CLAN_FOLDER = new File(FOLDER, "clans");
+        PLAYER_FOLDER = new File(FOLDER, "players");
+        INBOX_FOLDER = new File(FOLDER, "inboxes");
+        ensureFolder(CLAN_FOLDER);
+        ensureFolder(PLAYER_FOLDER);
+        ensureFolder(INBOX_FOLDER);
+
         INBOXMANAGER = new InboxManager();
         BUFFERMANAGER = new BufferManager();
-        if (!FOLDER.exists()) {
-            FOLDER.mkdir();
-        }
-
-
-        if (!CONFIG_FILE.exists()) {
-            CONFIG_FILE = new File(FOLDER, "config.yml");
-        }
-
+        saveResource("quest.yml", false);
         MOPO_YAML = new MopoYaml();
         configYML = MopoYaml.loadFromFile(CONFIG_FILE, true);
+        PLAYER_YAML = new MopoYaml();
+        CLAN_YAML = new MopoYaml();
+        INBOX_YML = new MopoYaml();
         PLAYERDATAMANAGER = new PlayerDataManager();
         CLANMANAGER = new ClanManager();
+        CLANMANAGER.loadClanMap();
 
         PluginManager pm = getServer().getPluginManager();
         Bukkit.getPluginCommand("clan").setExecutor(new ClanCMD());
 
-        pm.registerEvents(new InboxListener(), MopoClans.getINSTANCE());
-        pm.registerEvents(new ClanListener(), MopoClans.getINSTANCE());
+        pm.registerEvents(new InboxListener(), this);
+        pm.registerEvents(new ClanListener(), this);
+        pm.registerEvents(new PlayerDataListener(), this);
     }
 
     @Override
     public void onDisable() {
+        if (PLAYERDATAMANAGER != null) {
+            PLAYERDATAMANAGER.saveAllPlayerData();
+        }
+        if (CLANMANAGER != null) {
+            CLANMANAGER.saveAll();
+        }
+        if (configYML != null) {
+            configYML.saveSync(CONFIG_FILE);
+        }
 
     }
 
@@ -120,12 +133,7 @@ public final class MopoClans extends JavaPlugin {
     }
 
     public static File getFolder() {
-        if (FOLDER != null) {
-            return FOLDER;
-        } else {
-            FOLDER.mkdir();
-        }
-        return null;
+        return FOLDER;
     }
 
     public static MopoYaml getMopoYaml() {
@@ -135,5 +143,4 @@ public final class MopoClans extends JavaPlugin {
     public static MopoYaml getConfigYML() {
         return configYML;
     }
-
 }

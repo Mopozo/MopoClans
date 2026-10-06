@@ -1,13 +1,13 @@
-package org.Mopo.mopoClans.Commands;
+package org.Mopo.mopoClans.commands;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.Mopo.mopoClans.ClanData.Clan;
-import org.Mopo.mopoClans.ClanData.ClanManager;
-import org.Mopo.mopoClans.Inbox.InboxManager;
-import org.Mopo.mopoClans.Inventories.ClanGUI;
+import org.Mopo.mopoClans.clandata.Clan;
+import org.Mopo.mopoClans.clandata.ClanManager;
+import org.Mopo.mopoClans.inbox.InboxManager;
+import org.Mopo.mopoClans.inventories.ClanGUI;
 import org.Mopo.mopoClans.MopoClans;
-import org.Mopo.mopoClans.PlayerData.PlayerData;
-import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
+import org.Mopo.mopoClans.playerdata.PlayerData;
+import org.Mopo.mopoClans.playerdata.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +35,7 @@ public class ClanCMD implements CommandExecutor {
 
             if (args.length >= 1) {
                 String arg1 = args[0];
-                switch (arg1) {
+                switch (arg1) { //todo lowercase
                     case "create" -> {
                             if (args.length == 3) {
                                 String clanName = args[1];

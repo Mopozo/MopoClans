@@ -1,8 +1,9 @@
-package org.Mopo.mopoClans.ClanData;
+package org.Mopo.mopoClans.clandata;
 
 import mopo.mopoLib.yml.MopoYaml;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,8 +13,8 @@ public class Clan {
     private String clanTag;
     private int maxMembers;
     private UUID clanLeaderUUID;
-    private List<UUID> clanAdminsUUID;
-    private List<UUID> clanMembersUUID;
+    private List<UUID> clanAdminsUUID = new ArrayList<>();
+    private List<UUID> clanMembersUUID = new ArrayList<>();
     private int clanPoints;
     private double clanBalance;
     private int clanLevel;
@@ -24,6 +25,7 @@ public class Clan {
     Clan(String clanName, String clanTag, UUID leaderUUID) {
         this.clanName = clanName;
         this.clanTag = clanTag;
+        this.maxMembers = 4;
         this.clanLevel = 0;
         this.clanEXP = 0;
         this.clanPoints = 0;
@@ -32,6 +34,7 @@ public class Clan {
     }
 
     Clan() {
+        this.maxMembers = 4;
         this.clanName = null;
         this.clanTag = null;
         this.clanLevel = 0;
@@ -79,7 +82,13 @@ public class Clan {
     }
 
     public void setClanAdminsUUID(UUID clanAdminsUUID) {
-        this.clanAdminsUUID.add(clanAdminsUUID);
+        if (!this.clanAdminsUUID.contains(clanAdminsUUID)) {
+            this.clanAdminsUUID.add(clanAdminsUUID);
+        }
+    }
+
+    public void removeClanAdminUUID(UUID clanAdminsUUID) {
+        this.clanAdminsUUID.remove(clanAdminsUUID);
     }
 
     public List<UUID> getClanMembersUUID() {
@@ -87,10 +96,15 @@ public class Clan {
     }
 
     public void addClanMembersUUID(UUID clanMembersUUID) {
-        this.clanMembersUUID.add(clanMembersUUID);
+        if (!this.clanMembersUUID.contains(clanMembersUUID)) {
+            this.clanMembersUUID.add(clanMembersUUID);
+        }
     }
 
-    public void removeClanMembersUUID(UUID clanMemberUUID) {this.clanMembersUUID.remove(clanMemberUUID);}
+    public void removeClanMembersUUID(UUID clanMemberUUID) {
+        this.clanMembersUUID.remove(clanMemberUUID);
+        this.clanAdminsUUID.remove(clanMemberUUID);
+    }
 
     public int getClanPoints() {
         return clanPoints;
@@ -133,6 +147,30 @@ public class Clan {
     }
 
     public MopoYaml getYml() {
-        return MopoYaml.loadFromFile(clanFile);
+        return yml;
+    }
+
+    void setYml(MopoYaml yml) {
+        this.yml = yml;
+    }
+
+    public void save() {
+        if (clanFile == null) {
+            throw new IllegalStateException("Cannot save a clan without a file");
+        }
+        if (yml == null) {
+            yml = MopoYaml.loadFromFile(clanFile, true);
+        }
+        yml.set("name", clanName);
+        yml.set("tag", clanTag);
+        yml.set("max_members", maxMembers);
+        yml.set("leader_uuid", clanLeaderUUID == null ? null : clanLeaderUUID.toString());
+        yml.set("admin_uuids", clanAdminsUUID.stream().map(UUID::toString).toList());
+        yml.set("member_uuids", clanMembersUUID.stream().map(UUID::toString).toList());
+        yml.set("points", clanPoints);
+        yml.set("balance", clanBalance);
+        yml.set("level", clanLevel);
+        yml.set("experience", clanEXP);
+        yml.saveSync(clanFile);
     }
 }

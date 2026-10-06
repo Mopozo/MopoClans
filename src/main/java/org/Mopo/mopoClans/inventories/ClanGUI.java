@@ -1,11 +1,11 @@
-package org.Mopo.mopoClans.Inventories;
+package org.Mopo.mopoClans.inventories;
 
 
 import mopo.mopoLib.items.CreateItem;
 import mopo.mopoLib.nbt.NBT;
 import org.Mopo.mopoClans.MopoClans;
-import org.Mopo.mopoClans.PlayerData.PlayerData;
-import org.Mopo.mopoClans.PlayerData.PlayerDataManager;
+import org.Mopo.mopoClans.playerdata.PlayerData;
+import org.Mopo.mopoClans.playerdata.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -43,7 +43,7 @@ public class ClanGUI {
             nbt.setString("action", "inbox");
         });
 
-        Inventory inventory = Bukkit.createInventory(new ClanGUIHolder(),18);
+        Inventory inventory = Bukkit.createInventory(new ClanGUIHolder(), 18);
         inventory.setItem(13,closeItem );
         inventory.setItem(5, profileItem);
         inventory.setItem(3, membersItem);
