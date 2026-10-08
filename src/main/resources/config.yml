@@ -1,2 +1,4 @@
 
-MaxClanSize: 4
+
+Clan:
+  MaxClanSize: 4
