@@ -33,7 +33,8 @@ public class ClanManager {
             throw new IllegalArgumentException("A clan with that name already exists");
         }
         Clan clan = new Clan(clanName, clanTag, leaderUUID);
-        int maxMembers = configYML.getInt("max_clan_members", configYML.getInt("MaxClanSize", 4));
+        int maxMembers = configYML.getInt("max_clan_members",
+                configYML.getInt("Clan.MaxClanSize", configYML.getInt("MaxClanSize", 4)));
         if (maxMembers < 1) {
             maxMembers = 4;
         }
@@ -106,6 +107,10 @@ public class ClanManager {
         return clanName == null ? null : clanMap.get(clanName);
     }
 
+    public List<Clan> getClans() {
+        return List.copyOf(clanMap.values());
+    }
+
     public void deleteClan(String clanName) {
         if (clanName == null) {
             return;
@@ -157,22 +162,23 @@ public class ClanManager {
         clanMap.values().forEach(Clan::save);
     }
 
-    public void addClanMember(UUID playerUUID, String clanName) {
-
+    public boolean addClanMember(UUID playerUUID, String clanName) {
         PlayerData playerData = playerdatamanager.getPlayerData(playerUUID);
         Clan clan = getClan(clanName);
-        if (playerData != null && clan != null && playerData.getClanName() == null
-                && clan.getClanMembersUUID().size() < clan.getMaxMembers()) {
-            playerData.setClanName(clanName);
-            playerData.setClanRank("default");
-            playerData.removeIncomingClanInvite(clanName);
-            if (playerData.getInbox() != null) {
-                playerData.getInbox().removeClanInvite(clanName);
-            }
-            clan.addClanMembersUUID(playerUUID);
-            clan.save();
-            playerdatamanager.savePlayerData(playerUUID);
+        if (playerData == null || clan == null || playerData.getClanName() != null
+                || clan.getClanMembersUUID().size() >= clan.getMaxMembers()) {
+            return false;
         }
+        playerData.setClanName(clanName);
+        playerData.setClanRank("default");
+        playerData.removeIncomingClanInvite(clanName);
+        if (playerData.getInbox() != null) {
+            playerData.getInbox().removeClanInvite(clanName);
+        }
+        clan.addClanMembersUUID(playerUUID);
+        clan.save();
+        playerdatamanager.savePlayerData(playerUUID);
+        return true;
     }
 
     public void removeClanMember(UUID playerUUID) {
@@ -217,48 +223,81 @@ public class ClanManager {
         if (getClan(clanName) != null) {
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) {
-                PlayerData playerData = playerdatamanager.getPlayerData(player.getUniqueId());
-                if (playerData != null) {
-                    playerData.removeIncomingClanInvite(clanName);
-                    if (playerData.getInbox() != null) {
-                        playerData.getInbox().removeClanInvite(clanName);
-                    }
-                    playerdatamanager.savePlayerData(player.getUniqueId());
-                }
+                removeClanInvite(player.getUniqueId(), clanName);
             }
+        }
+    }
+
+    public void removeClanInvite(UUID playerUUID, String clanName) {
+        PlayerData playerData = playerdatamanager.getPlayerData(playerUUID);
+        if (playerData != null) {
+            playerData.removeIncomingClanInvite(clanName);
+            if (playerData.getInbox() != null) {
+                playerData.getInbox().removeClanInvite(clanName);
+            }
+            playerdatamanager.savePlayerData(playerUUID);
         }
     }
 
     public void promoteClanMember(String playerName, String clanName) {
-        Clan clan = getClan(clanName);
-        if (clan != null) {
-            Player player = Bukkit.getPlayer(playerName);
-            if (player != null && clan.getClanMembersUUID().contains(player.getUniqueId())
-                    && !clan.getClanAdminsUUID().contains(player.getUniqueId())) {
-                clan.setClanAdminsUUID(player.getUniqueId());
-                playerdatamanager.updateClanData(player.getUniqueId(), clanName, "admin");
-                clan.save();
-            }
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null) {
+            promoteClanMember(player.getUniqueId(), clanName);
         }
     }
 
-    public void setClanOwner(String playerName, String clanName) {
+    public void promoteClanMember(UUID playerUUID, String clanName) {
         Clan clan = getClan(clanName);
-        if (clan != null) {
-            Player player = Bukkit.getPlayer(playerName);
-            if (player != null) {
-                UUID clanLeaderUUID = clan.getClanLeaderUUID();
-                if (!clan.getClanMembersUUID().contains(player.getUniqueId())) {
-                    return;
-                }
-                clan.setClanAdminsUUID(clanLeaderUUID);
-                clan.removeClanAdminUUID(player.getUniqueId());
-                clan.setClanLeaderUUID(player.getUniqueId());
-                playerdatamanager.updateClanData(clanLeaderUUID, clanName, "admin");
-                playerdatamanager.updateClanData(player.getUniqueId(), clanName, "leader");
-                clan.save();
-            }
+        if (clan != null && clan.getClanMembersUUID().contains(playerUUID)
+                && !clan.getClanAdminsUUID().contains(playerUUID)
+                && !playerUUID.equals(clan.getClanLeaderUUID())) {
+            clan.setClanAdminsUUID(playerUUID);
+            playerdatamanager.updateClanData(playerUUID, clanName, "admin");
+            clan.save();
         }
+    }
+
+    public boolean setClanMemberRank(UUID playerUUID, String clanName, String rank) {
+        if (!"admin".equals(rank) && !"default".equals(rank)) {
+            throw new IllegalArgumentException("Clan member rank must be admin or default");
+        }
+        Clan clan = getClan(clanName);
+        if (clan == null || !clan.getClanMembersUUID().contains(playerUUID)
+                || playerUUID.equals(clan.getClanLeaderUUID())) {
+            return false;
+        }
+        if ("admin".equals(rank)) {
+            clan.setClanAdminsUUID(playerUUID);
+        } else {
+            clan.removeClanAdminUUID(playerUUID);
+        }
+        playerdatamanager.updateClanData(playerUUID, clanName, rank);
+        clan.save();
+        return true;
+    }
+
+    public void setClanOwner(String playerName, String clanName) {
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null) {
+            setClanOwner(player.getUniqueId(), clanName);
+        }
+    }
+
+    public void setClanOwner(UUID playerUUID, String clanName) {
+        Clan clan = getClan(clanName);
+        if (clan == null || !clan.getClanMembersUUID().contains(playerUUID)) {
+            return;
+        }
+        UUID previousLeader = clan.getClanLeaderUUID();
+        if (playerUUID.equals(previousLeader)) {
+            return;
+        }
+        clan.setClanAdminsUUID(previousLeader);
+        clan.removeClanAdminUUID(playerUUID);
+        clan.setClanLeaderUUID(playerUUID);
+        playerdatamanager.updateClanData(previousLeader, clanName, "admin");
+        playerdatamanager.updateClanData(playerUUID, clanName, "leader");
+        clan.save();
     }
 
     private void readUuids(List<String> uuids, Clan clan, boolean admins, File file) {

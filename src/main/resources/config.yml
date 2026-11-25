@@ -1,4 +1,71 @@
+max_clan_members: 4
 
-
-Clan:
-  MaxClanSize: 4
+gui:
+  main:
+    title: "Clan Menu"
+    close:
+      material: BARRIER
+      name: "<gray>Close"
+    create:
+      material: EMERALD
+      name: "<green>Create a Clan"
+    invitations:
+      material: BOOK
+      name: "<aqua>Clan Invitations"
+    clan_info:
+      material: WHITE_BANNER
+      name: "<gold>{clan} <gray>[{tag}]"
+    members:
+      material: PLAYER_HEAD
+      name: "<aqua>Members"
+    invite:
+      material: NAME_TAG
+      name: "<yellow>Invite a Player"
+    rename:
+      material: ANVIL
+      name: "<yellow>Rename Clan"
+    disband:
+      material: TNT
+      name: "<red>Disband Clan"
+    leave:
+      material: BARRIER
+      name: "<red>Leave Clan"
+    admin_clans:
+      material: COMPASS
+      name: "<light_purple>Manage All Clans"
+  members:
+    title: "Clan Members"
+    item:
+      material: PLAYER_HEAD
+      name: "<aqua>{player}"
+      lore: "<gray>Rank: {rank}"
+    rank:
+      owner: "<gold>Owner"
+      admin: "<yellow>Admin"
+      member: "<green>Member"
+  invitations:
+    title: "Clan Invitations"
+    empty:
+      material: PAPER
+      name: "<gray>You have no clan invitations"
+    item:
+      material: WRITABLE_BOOK
+      name: "<blue>Invitation from <gold>{clan}"
+      lore: "<gray>Left-click to accept, right-click to decline."
+    back:
+      name: "<gray>Back"
+  member_actions:
+    title: "Member Actions"
+    rank:
+      material: NAME_TAG
+      name: "<yellow>Set Member Rank"
+  ranks:
+    title: "Set Member Rank"
+    admin:
+      material: GOLD_INGOT
+      name: "<yellow>Admin"
+    member:
+      material: IRON_INGOT
+      name: "<green>Member"
+  confirmation:
+    title: "Confirm Clan Action"

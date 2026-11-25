@@ -4,3 +4,8 @@ version: '${version}'
 main: org.Mopo.mopoClans.MopoClans
 api-version: '26.1.2'
 load: POSTWORLD
+
+commands:
+  clan:
+    description: Open the clan menu or manage your clan.
+    usage: /clan
